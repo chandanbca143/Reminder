@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List with Reminder</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; margin: 20px; }
+        .container { 
+            max-width: 400px; 
+            margin: auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+        h1 { color: #333; }
+        input { 
+            width: calc(100% - 22px); 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+        }
+        button { 
+            width: 100%; 
+            padding: 10px; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        button:hover { background: #218838; }
+        .task { 
+            display: flex; 
+            justify-content: space-between; 
+            background: #fff3cd; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 5px; 
+            border-left: 5px solid #ffc107; 
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .delete-btn:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List with Reminders</h1>
+        <input type="text" id="taskInput" placeholder="Enter task">
+        <input type="time" id="timeInput">
+        <button onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+    </div>
+    
+    <audio id="reminderSound" src="ringtone.mp3" preload="auto"></audio>
+
+    <script>
+        function addTask() {
+            let taskText = document.getElementById("taskInput").value;
+            let taskTime = document.getElementById("timeInput").value;
+            if (taskText && taskTime) {
+                let li = document.createElement("li");
+                li.className = "task";
+                li.innerHTML = `${taskText} - ${taskTime} <button class="delete-btn" onclick="deleteTask(this)">Delete</button>`;
+                document.getElementById("taskList").appendChild(li);
+                setReminder(taskText, taskTime);
+            }
+        }
+
+        function deleteTask(button) {
+            button.parentElement.remove();
+        }
+
+        function setReminder(task, time) {
+            let now = new Date();
+            let taskTime = new Date();
+            let [hours, minutes] = time.split(":");
+            taskTime.setHours(hours, minutes, 0, 0);
+            let delay = taskTime - now;
+            if (delay > 0) {
+                setTimeout(() => {
+                    alert(`Reminder: ${task}`);
+                    let sound = document.getElementById("reminderSound");
+                    sound.play();
+                }, delay);
+            } else {
+                alert("Selected time has already passed!");
+            }
+        }
+    </script>
+</body>
+</html>
